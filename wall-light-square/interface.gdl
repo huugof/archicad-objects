@@ -1,0 +1,150 @@
+! =========================================================
+! Interface Script – Wall-Mounted Square Light
+! Compact 3-Column Layout – Wider Columns + Top Padding
+! =========================================================
+
+UI_DIALOG `Wall-Mounted Square Light – Settings`
+
+! Layout constants
+_x1 = 10           ! Left column (3D Options)
+_x2 = _x1 + 185    ! Middle column (Dimensions)
+_x3 = _x2 + 185    ! Right column (2D Options)
+_yTop = 10
+_yGap = 10
+_padTop = 5        ! extra padding from top of each groupbox
+
+flags_bYlabel = (isSquare = 1) * 4
+
+! ---------------------------
+! Column 1 – 3D Options
+! ---------------------------
+UI_GROUPBOX `3D Options`, _x1, _yTop, 175, 150
+
+UI_OUTFIELD `Surface/Recessed`, _x1 + 10, _yTop + 15 + _padTop, 120, 15
+UI_INFIELD  "originToggle",     _x1 + 150, _yTop + 13 + _padTop, 18, 18
+
+UI_OUTFIELD `Square/Rectangle`, _x1 + 10, _yTop + 35 + _padTop, 120, 15
+UI_INFIELD  "isSquare",         _x1 + 150, _yTop + 33 + _padTop, 18, 18
+
+UI_OUTFIELD `Tapered Sides`,    _x1 + 10, _yTop + 55 + _padTop, 120, 15
+UI_INFIELD  "isTapered",        _x1 + 150, _yTop + 53 + _padTop, 18, 18
+
+UI_OUTFIELD `Flange (on/off)`,  _x1 + 10, _yTop + 75 + _padTop, 120, 15
+UI_INFIELD  "hasFlange",        _x1 + 150, _yTop + 73 + _padTop, 18, 18
+
+UI_OUTFIELD `Lens (on/off)`,    _x1 + 10, _yTop + 95 + _padTop, 120, 15
+UI_INFIELD  "lensToggle",       _x1 + 150, _yTop + 93 + _padTop, 18, 18
+
+UI_OUTFIELD `Wall Mount (3D)`,  _x1 + 10, _yTop + 115 + _padTop, 120, 15
+UI_INFIELD  "hasArm",           _x1 + 150, _yTop + 113 + _padTop, 18, 18
+
+! ---------------------------
+! Column 1 – Materials (moved under 3D Options)
+! ---------------------------
+_yMat = _yTop + 160
+UI_GROUPBOX `Materials`, _x1, _yMat, 175, 110
+
+UI_OUTFIELD `Fixture surface`,   _x1 + 10, _yMat + 15 + _padTop, 100, 15
+UI_INFIELD  "matRecess",         _x1 + 105, _yMat + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange surface`,    _x1 + 10, _yMat + 35 + _padTop, 100, 15
+UI_INFIELD  "matFlange",         _x1 + 105, _yMat + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Lens surface`,      _x1 + 10, _yMat + 55 + _padTop, 100, 15
+UI_INFIELD  "matLens",           _x1 + 105, _yMat + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Mounting hardware`, _x1 + 10, _yMat + 75 + _padTop, 100, 15
+UI_INFIELD  "matArm",            _x1 + 105, _yMat + 73 + _padTop, 60, 19
+
+! ---------------------------
+! Column 2 – Dimensions
+! ---------------------------
+UI_GROUPBOX `Dimensions`, _x2, _yTop, 175, 130
+
+! Left sub-column
+UI_OUTFIELD `Bottom width`,     _x2 + 10, _yTop + 15 + _padTop, 100, 15
+UI_INFIELD  "bX",               _x2 + 105, _yTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD "Bottom length",    _x2 + 10, _yTop + 35 + _padTop, 100, 15, (isSquare=1)*4
+UI_INFIELD  "bY",               _x2 + 105, _yTop + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Top width`,        _x2 + 10, _yTop + 55 + _padTop, 100, 15
+UI_INFIELD  "tX",               _x2 + 105, _yTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Top length`,       _x2 + 10, _yTop + 75 + _padTop, 100, 15
+UI_INFIELD  "tY",               _x2 + 105, _yTop + 73 + _padTop, 60, 19
+
+UI_OUTFIELD `Height`,            _x2 + 10, _yTop + 95 + _padTop, 100, 15
+UI_INFIELD  "hDepth",           _x2 + 105, _yTop + 93 + _padTop, 60, 19
+
+
+
+UI_GROUPBOX ``, _x2, _yMat, 175, 90
+
+UI_OUTFIELD `Wall thickness`,   _x2 + 10, _yMat + 5 + _padTop, 100, 15
+UI_INFIELD  "wallThk",          _x2 + 105, _yMat + 3 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange thickness`, _x2 + 10, _yMat + 25 + _padTop, 100, 15
+UI_INFIELD  "flThk",            _x2 + 105, _yMat + 23 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange overhang`,  _x2 + 10, _yMat + 45 + _padTop, 100, 15
+UI_INFIELD  "flLap",            _x2 + 105, _yMat + 43 + _padTop, 60, 19
+
+UI_OUTFIELD `Lens setback`,     _x2 + 10, _yMat + 65 + _padTop, 100, 15
+UI_INFIELD  "lensSetback",      _x2 + 105, _yMat + 63 + _padTop, 60, 19
+
+! ---------------------------
+! Column 3 – Label (IMPROVED with toggle)
+! ---------------------------
+_y2DTop = _yTop
+! --- Label group (made taller for toggle) ---
+UI_GROUPBOX `Label`, _x3, _y2DTop, 175, 100
+
+UI_OUTFIELD `Label (ID/Custom)`,     _x3 + 10, _y2DTop + 15 + _padTop, 100, 15
+UI_INFIELD  "labelSource",      _x3 + 105, _y2DTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Custom text`,      _x3 + 10, _y2DTop + 35 + _padTop, 100, 15, (labelSource=0)*4
+UI_INFIELD  "labelText",        _x3 + 105, _y2DTop + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Pen`,              _x3 + 10, _y2DTop + 55 + _padTop, 100, 15
+UI_INFIELD  "pen2D",            _x3 + 105, _y2DTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Font Size`,        _x3 + 10, _y2DTop + 75 + _padTop, 100, 15
+UI_INFIELD  "labelSize",        _x3 + 105, _y2DTop + 73 + _padTop, 60, 19
+
+! --- Symbol group (adjusted position) ---
+_ySymbolTop = _y2DTop + 110
+UI_GROUPBOX `Symbol`, _x3, _ySymbolTop, 175, 120
+
+UI_OUTFIELD `Symbol`,         _x3 + 10, _ySymbolTop + 15 + _padTop, 100, 15
+UI_INFIELD  "sym2DStyle",     _x3 + 105, _ySymbolTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Opaque (y/n)`,   _x3 + 10, _ySymbolTop + 35 + _padTop, 100, 15
+UI_INFIELD  "opaque2D",       _x3 + 105, _ySymbolTop + 33 + _padTop, 18, 18
+
+UI_OUTFIELD `Fill`,           _x3 + 10, _ySymbolTop + 55 + _padTop, 100, 15
+UI_INFIELD  "maskFillType",   _x3 + 105, _ySymbolTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Fill Pen`,       _x3 + 10, _ySymbolTop + 75 + _padTop, 100, 15
+UI_INFIELD  "maskFillPen",    _x3 + 105, _ySymbolTop + 73 + _padTop, 60, 19
+
+! ---------------------------
+! Wall Mount Group (below Symbol)
+! ---------------------------
+_yWallMount = _ySymbolTop + 135
+UI_GROUPBOX `Wall Mount`, _x3, _yWallMount, 175, 130
+
+UI_OUTFIELD `Arm length`,     _x3 + 10, _yWallMount + 15 + _padTop, 100, 15
+UI_INFIELD  "armLength",      _x3 + 105, _yWallMount + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Plate width`,    _x3 + 10, _yWallMount + 35 + _padTop, 100, 15
+UI_INFIELD  "plateWidth",     _x3 + 105, _yWallMount + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Plate height`,   _x3 + 10, _yWallMount + 55 + _padTop, 100, 15
+UI_INFIELD  "plateHeight",    _x3 + 105, _yWallMount + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Plate thickness`, _x3 + 10, _yWallMount + 75 + _padTop, 100, 15
+UI_INFIELD  "plateThk",       _x3 + 105, _yWallMount + 73 + _padTop, 60, 19
+
+UI_OUTFIELD `Arm thickness`,  _x3 + 10, _yWallMount + 95 + _padTop, 100, 15
+UI_INFIELD  "armThk",         _x3 + 105, _yWallMount + 93 + _padTop, 60, 19
