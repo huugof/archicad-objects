@@ -32,21 +32,23 @@ IF opaque2D THEN
     FILL maskFillType
     POLY2_B 5, 2+4,        ! 2=fill, 4=close polygon
         maskFillPen, 91,  ! Use parameters for pen colors
-        -_bhx, -_bhy, 1,
-        _bhx, -_bhy, 1,
-        _bhx, _bhy, 1,
-        -_bhx, _bhy, 1,
-        -_bhx, -_bhy, 1
+        -_bhx, -_bhy + _fixtureY, 1,
+        _bhx, -_bhy + _fixtureY, 1,
+        _bhx, _bhy + _fixtureY, 1,
+        -_bhx, _bhy + _fixtureY, 1,
+        -_bhx, -_bhy + _fixtureY, 1
 ENDIF
 
 ! ---------------------------------------------------------
-! Square outline (always draw)
+! Square outline (positioned away from origin)
+! With new origin at plate face, fixture is offset by yOrigin distance
+_fixtureY = yOrigin  ! Distance from origin to fixture center
 POLY2_B 5, 1+4, 0, 0,
-    -_bhx, -_bhy, 1,
-    _bhx, -_bhy, 1,
-    _bhx, _bhy, 1,
-    -_bhx, _bhy, 1,
-    -_bhx, -_bhy, 1
+    -_bhx, -_bhy + _fixtureY, 1,
+    _bhx, -_bhy + _fixtureY, 1,
+    _bhx, _bhy + _fixtureY, 1,
+    -_bhx, _bhy + _fixtureY, 1,
+    -_bhx, -_bhy + _fixtureY, 1
 
 ! ---------------------------------------------------------
 ! Extra symbol graphics by style
@@ -57,35 +59,34 @@ IF sym2DStyle = 0 THEN
 ELSE
     IF sym2DStyle = 1 THEN
         ! Square + X (45° corner-to-corner)
-        LINE2 -_bhx, -_bhy, _bhx, _bhy
-        LINE2 _bhx, -_bhy, -_bhx, _bhy
+        LINE2 -_bhx, -_bhy + _fixtureY, _bhx, _bhy + _fixtureY
+        LINE2 _bhx, -_bhy + _fixtureY, -_bhx, _bhy + _fixtureY
     ELSE
         IF sym2DStyle = 2 THEN
             ! Square + crosshair (extend a bit beyond box)
             _ext = MIN(_bhx, _bhy) / 2
-            LINE2 -_bhx - _ext, 0, _bhx + _ext, 0
-            LINE2 0, -_bhy - _ext, 0, _bhy + _ext
+            LINE2 -_bhx - _ext, _fixtureY, _bhx + _ext, _fixtureY
+            LINE2 0, -_bhy - _ext + _fixtureY, 0, _bhy + _ext + _fixtureY
         ELSE
             ! sym2DStyle = 3 : up arrow from top mid (flipped direction)
             _arrowLen = MIN(bX, bY) / 1.2    ! Increased from /2.5 to /1.8 (longer)
             _arrowHalf = MIN(bX, bY) / 3     ! Increased from /8 to /5 (wider)
-            LINE2 0, _bhy, 0, _bhy + _arrowLen
-            LINE2 0, _bhy + _arrowLen, -_arrowHalf, _bhy + (_arrowLen * 0.6)  ! Changed from 0.6 to 0.8 (sharper angle)
-            LINE2 0, _bhy + _arrowLen, _arrowHalf, _bhy + (_arrowLen * 0.6)   ! Changed from 0.6 to 0.8 (sharper angle)
+            LINE2 0, _bhy + _fixtureY, 0, _bhy + _arrowLen + _fixtureY
+            LINE2 0, _bhy + _arrowLen + _fixtureY, -_arrowHalf, _bhy + (_arrowLen * 0.6) + _fixtureY  ! Changed from 0.6 to 0.8 (sharper angle)
+            LINE2 0, _bhy + _arrowLen + _fixtureY, _arrowHalf, _bhy + (_arrowLen * 0.6) + _fixtureY   ! Changed from 0.6 to 0.8 (sharper angle)
         ENDIF
     ENDIF
 ENDIF
 
 ! ---------------------------------------------------------
-! Wall mounting arm and plate (always shown)
+! Wall mounting arm and plate (positioned with new origin)
 ! ---------------------------------------------------------
 
-! Mounting arm line extending from fixture to wall
-LINE2 0, -_bhy, 0, -_bhy - _armLen2D
+! Mounting arm line extending from fixture to plate (origin)
+LINE2 0, -_bhy + _fixtureY, 0, 0
 
-! Wall mounting plate as horizontal bar (|-like symbol)
-_plateYPos = -_bhy - _armLen2D
-LINE2 -_plateHW2D, _plateYPos, _plateHW2D, _plateYPos
+! Wall mounting plate as horizontal bar at origin (Y=0)
+LINE2 -_plateHW2D, 0, _plateHW2D, 0
 
 ! ---------------------------------------------------------
 ! Movable label handle (combined editing of labelX & labelY)
@@ -138,9 +139,36 @@ TEXT2 0, 0, _displayText
 DEL 2  ! Remove both ADD2 and ROT2
 
 ! ---------------------------------------------------------
-! Reference snap hotspots (optional)
-HOTSPOT2 0, 0
-HOTSPOT2 _bhx, _bhy
-HOTSPOT2 -_bhx, _bhy
-HOTSPOT2 -_bhx, -_bhy
-HOTSPOT2 _bhx, -_bhy
+! Interactive dimension editing hotspots
+! ---------------------------------------------------------
+
+! Arm length editing (along arm centerline)
+HOTSPOT2 0, 0, 3001, armLength, 1+128           ! Base hotspot at plate
+HOTSPOT2 0, -1, 3002, armLength, 3              ! Reference hotspot
+HOTSPOT2 0, _fixtureY, 3003, armLength, 2       ! Draggable hotspot at fixture
+
+! Plate width editing (horizontal at plate)
+HOTSPOT2 -_plateHW2D, 0, 3004, plateWidth, 1+128  ! Base hotspot left
+HOTSPOT2 -_plateHW2D-1, 0, 3005, plateWidth, 3     ! Reference hotspot
+HOTSPOT2 _plateHW2D, 0, 3006, plateWidth, 2        ! Draggable hotspot right
+
+! Fixture width editing (horizontal at fixture)
+HOTSPOT2 -_bhx, _fixtureY, 3007, bX, 1+128      ! Base hotspot left
+HOTSPOT2 -_bhx-1, _fixtureY, 3008, bX, 3        ! Reference hotspot
+HOTSPOT2 _bhx, _fixtureY, 3009, bX, 2           ! Draggable hotspot right
+
+! Fixture height editing (vertical at fixture) - only if not square
+IF isSquare = 0 THEN
+    HOTSPOT2 0, -_bhy + _fixtureY, 3010, bY, 1+128  ! Base hotspot bottom
+    HOTSPOT2 0, -_bhy-1 + _fixtureY, 3011, bY, 3    ! Reference hotspot
+    HOTSPOT2 0, _bhy + _fixtureY, 3012, bY, 2        ! Draggable hotspot top
+ENDIF
+
+! ---------------------------------------------------------
+! Reference snap hotspots (positioned with new origin)
+HOTSPOT2 0, 0                                    ! Origin at plate face
+HOTSPOT2 0, _fixtureY                           ! Fixture center
+HOTSPOT2 _bhx, _bhy + _fixtureY                 ! Fixture corners
+HOTSPOT2 -_bhx, _bhy + _fixtureY
+HOTSPOT2 -_bhx, -_bhy + _fixtureY
+HOTSPOT2 _bhx, -_bhy + _fixtureY

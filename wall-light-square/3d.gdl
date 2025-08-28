@@ -3,79 +3,82 @@
 ! =========================================================
 
 
+! Apply new coordinate system - origin at plate face, centered on arm
+addy yOrigin
 addz zOrigin
 
 ! ----- Recess walls -----
 ! Bottom polygon (z=0), then top polygon (z=_d)
+! Position fixture so back edge connects to arm properly
 MATERIAL matRecess
 RULED 4, 4,
-    -_bhx, -_bhy, 0,
-     _bhx, -_bhy, 0,
-     _bhx,  _bhy, 0,
-    -_bhx,  _bhy, 0,
-    -_thx, -_thy, _d,
-     _thx, -_thy, _d,
-     _thx,  _thy, _d,
-    -_thx,  _thy, _d
+    -_bhx, -_bhy + _bhy, 0,
+     _bhx, -_bhy + _bhy, 0,
+     _bhx,  _bhy + _bhy, 0,
+    -_bhx,  _bhy + _bhy, 0,
+    -_thx, -_thy + _bhy, _d,
+     _thx, -_thy + _bhy, _d,
+     _thx,  _thy + _bhy, _d,
+    -_thx,  _thy + _bhy, _d
 
 ! ----- Top face (solid cap) - aligned with wall tops -----
 MATERIAL matRecess
 ADDz _d - _ct                   ! Position cap so top aligns with wall tops at z=_d
 PRISM_ 5, _ct,                   ! cap thickness extrusion
-    -_thx-_wt, -_thy-_wt, 15,    ! Changed: SUBTRACT _wt from negative coordinates
-     _thx+_wt, -_thy-_wt, 15,    ! Keep: ADD _wt to positive X, SUBTRACT from negative Y
-     _thx+_wt,  _thy+_wt, 15,    ! Keep: ADD _wt to positive coordinates  
-    -_thx-_wt,  _thy+_wt, 15,    ! Changed: SUBTRACT _wt from negative X, ADD to positive Y
-    -_thx-_wt, -_thy-_wt, -1     ! Close polygon with first point
+    -_thx-_wt, -_thy-_wt + _bhy, 15,    ! Changed: SUBTRACT _wt from negative coordinates
+     _thx+_wt, -_thy-_wt + _bhy, 15,    ! Keep: ADD _wt to positive X, SUBTRACT from negative Y
+     _thx+_wt,  _thy+_wt + _bhy, 15,    ! Keep: ADD _wt to positive coordinates  
+    -_thx-_wt,  _thy+_wt + _bhy, 15,    ! Changed: SUBTRACT _wt from negative X, ADD to positive Y
+    -_thx-_wt, -_thy-_wt + _bhy, -1     ! Close polygon with first point
 DEL 1
 
 IF lensToggle THEN
 	MATERIAL matLens        ! assign lens/glass material
 	PLANE 4,
-    	-_bhx, -_bhy, lensSetback,
-    	 _bhx, -_bhy, lensSetback,
-     	_bhx,  _bhy, lensSetback,
-    -	_bhx,  _bhy, lensSetback
+    	-_bhx, -_bhy + _bhy, lensSetback,
+    	 _bhx, -_bhy + _bhy, lensSetback,
+     	_bhx,  _bhy + _bhy, lensSetback,
+    -	_bhx,  _bhy + _bhy, lensSetback
 ENDIF
 
 ! ----- Exterior walls -----
 ! Bottom polygon (z=0), then top polygon (z=_d)
 MATERIAL matRecess
 RULED 4, 4,
-    -_bhx-_wt, -_bhy-_wt, 0,    ! Left/front: SUBTRACT wall thickness
-     _bhx+_wt, -_bhy-_wt, 0,    ! Right/front: ADD to right, SUBTRACT from front  
-     _bhx+_wt,  _bhy+_wt, 0,    ! Right/back: ADD wall thickness
-    -_bhx-_wt,  _bhy+_wt, 0,    ! Left/back: SUBTRACT from left, ADD to back
-    -_thx-_wt, -_thy-_wt, _d,   ! Top coordinates: same logic
-     _thx+_wt, -_thy-_wt, _d,
-     _thx+_wt,  _thy+_wt, _d,
-    -_thx-_wt,  _thy+_wt, _d
+    -_bhx-_wt, -_bhy-_wt + _bhy, 0,    ! Left/front: SUBTRACT wall thickness
+     _bhx+_wt, -_bhy-_wt + _bhy, 0,    ! Right/front: ADD to right, SUBTRACT from front  
+     _bhx+_wt,  _bhy+_wt + _bhy, 0,    ! Right/back: ADD wall thickness
+    -_bhx-_wt,  _bhy+_wt + _bhy, 0,    ! Left/back: SUBTRACT from left, ADD to back
+    -_thx-_wt, -_thy-_wt + _bhy, _d,   ! Top coordinates: same logic
+     _thx+_wt, -_thy-_wt + _bhy, _d,
+     _thx+_wt,  _thy+_wt + _bhy, _d,
+    -_thx-_wt,  _thy+_wt + _bhy, _d
 
 
 ! ----- Flange ring at ceiling plane (extending DOWN) -----
 MATERIAL matFlange
 IF hasFlange THEN
 	PRISM_ 10, -_ft,                 ! negative height = downward
-    -_pox, -_poy, 15,
-     _pox, -_poy, 15,
-     _pox,  _poy, 15,
-    -_pox,  _poy, 15,
-    -_pox, -_poy, -1,     ! close outer contour
+    -_pox, -_poy + _bhy, 15,
+     _pox, -_poy + _bhy, 15,
+     _pox,  _poy + _bhy, 15,
+    -_pox,  _poy + _bhy, 15,
+    -_pox, -_poy + _bhy, -1,     ! close outer contour
 
-    -_bhx, -_bhy, 15,
-     _bhx, -_bhy, 15,
-     _bhx,  _bhy, 15,
-    -_bhx,  _bhy, 15,
-    -_bhx, -_bhy, -1      ! close inner hole
+    -_bhx, -_bhy + _bhy, 15,
+     _bhx, -_bhy + _bhy, 15,
+     _bhx,  _bhy + _bhy, 15,
+    -_bhx,  _bhy + _bhy, 15,
+    -_bhx, -_bhy + _bhy, -1      ! close inner hole
 ENDIF
 
 ! ----- Wall mounting hardware (optional) -----
 IF hasArm THEN
     MATERIAL matArm
     
-    ! Wall mounting plate (at wall end of arm, centered vertically on arm)
-    ADDy -_armLen                    ! Move to wall end position
-    ADDz hDepth/2 - _plateH/2        ! Position plate center at arm center level
+    ! Wall mounting plate (at wall surface - aligned with fixture center)
+    ADDy -_armLen - _plateT/2        ! Position at wall surface
+    ADDz _originZ - _plateH/2        ! Center plate at fixture center level
     PRISM_ 5, _plateH,               ! Plate height (extrude vertically)
         -_plateHW, -_plateT/2, 15,   ! Plate outline (width x thickness)
          _plateHW, -_plateT/2, 15,
@@ -86,7 +89,7 @@ IF hasArm THEN
     
     ! Mounting arm (horizontal connection from plate to fixture)
     ADDy -_armLen/2                  ! Position at arm center
-    ADDz hDepth/2 - _armH/2          ! Center arm vertically at hDepth/2
+    ADDz _originZ - _armH/2          ! Center arm at fixture center level
     PRISM_ 5, _armH,                 ! Arm height in Z
         -_armT/2, -_armLen/2, 15,    ! Arm outline (thin in X, long in Y)
          _armT/2, -_armLen/2, 15,
@@ -95,5 +98,49 @@ IF hasArm THEN
         -_armT/2, -_armLen/2, -1     ! Close polygon
     DEL 2                            ! Remove ADDy and ADDz
 ENDIF
+
+! ----- 3D Hotspots for dimension editing -----
+
+IF hasArm THEN
+    ! Plate corner hotspots (at back face - wall surface)
+    HOTSPOT -_plateHW, -_armLen - _plateT, _originZ - _plateH/2
+    HOTSPOT _plateHW, -_armLen - _plateT, _originZ - _plateH/2
+    HOTSPOT -_plateHW, -_armLen - _plateT, _originZ + _plateH/2
+    HOTSPOT _plateHW, -_armLen - _plateT, _originZ + _plateH/2
+    
+    ! Arm length editing hotspots
+    HOTSPOT 0, 0, _originZ, 3001, armLength, 1+128              ! Base at fixture connection
+    HOTSPOT 0, -1, _originZ, 3002, armLength, 3                ! Reference
+    HOTSPOT 0, -_armLen, _originZ, 3003, armLength, 2           ! Draggable at plate end
+    
+    ! Plate width editing hotspots 
+    HOTSPOT -_plateHW, -_armLen, _originZ, 3004, plateWidth, 1+128  ! Base left
+    HOTSPOT -_plateHW-1, -_armLen, _originZ, 3005, plateWidth, 3    ! Reference
+    HOTSPOT _plateHW, -_armLen, _originZ, 3006, plateWidth, 2       ! Draggable right
+ENDIF
+
+! Fixture corner hotspots (at actual fixture geometry)
+HOTSPOT -_bhx, _bhy, 0                                          ! Fixture front corners
+HOTSPOT _bhx, _bhy, 0
+HOTSPOT -_bhx, 2*_bhy, 0                                        ! Fixture back corners  
+HOTSPOT _bhx, 2*_bhy, 0
+HOTSPOT -_bhx, _bhy, _d                                         ! Top corners
+HOTSPOT _bhx, _bhy, _d
+HOTSPOT -_bhx, 2*_bhy, _d
+HOTSPOT _bhx, 2*_bhy, _d
+
+! Fixture dimension editing hotspots
+HOTSPOT -_bhx, _bhy, _d/2, 3007, bX, 1+128                     ! Width editing
+HOTSPOT -_bhx-1, _bhy, _d/2, 3008, bX, 3
+HOTSPOT _bhx, _bhy, _d/2, 3009, bX, 2
+
+IF isSquare = 0 THEN                                            ! Height editing (only if not square)
+    HOTSPOT 0, _bhy, _d/2, 3010, bY, 1+128
+    HOTSPOT 0, _bhy-1, _d/2, 3011, bY, 3  
+    HOTSPOT 0, 2*_bhy, _d/2, 3012, bY, 2
+ENDIF
+
+! Origin reference hotspot
+HOTSPOT 0, 0, 0                                                 ! Origin at plate face
 
 del 1

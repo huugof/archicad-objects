@@ -56,9 +56,21 @@ if isTapered = 0 then
     tY = bY
 endif
 
-! ---------- Origin toggle ----------
-if originToggle then
-    zOrigin = -_d     ! shift whole recess downward
+! ---------- New origin system - at plate face, centered on arm ----------
+! Calculate distance from fixture to plate face (new origin Y position)
+if hasArm then
+    _originY = _armLen + _plateT/2  ! Distance from fixture center to plate face
 else
-    zOrigin = 0
+    _originY = 0                    ! No offset if no arm
+endif
+
+_originZ = _d/2  ! Vertical center at fixture mid-height
+
+! Legacy origin toggle for backward compatibility
+if originToggle then
+    zOrigin = -_d + _originZ     ! shift whole fixture and maintain center
+    yOrigin = _originY
+else
+    zOrigin = _originZ           ! Center vertically at fixture mid-height  
+    yOrigin = _originY           ! Position at plate face
 endif
