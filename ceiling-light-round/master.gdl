@@ -1,0 +1,39 @@
+! =========================================================
+! CIRCULAR RECESSED LIGHT – Master Script (Imperial Units)
+! =========================================================
+! All physical length parameters are in INCHES.
+! Z=0 is the ceiling plane. Recess extends upward (+Z).
+! =========================================================
+
+! ---------- Derived/common values ----------
+_bd  = bDia      ! Bottom diameter
+_td  = tDia      ! Top diameter
+_d   = hDepth
+_ft  = flThk
+_fl  = flLap
+_ct  = capThk
+_wt  = wallThk
+
+! Radii for centered modeling
+_br = _bd / 2    ! Bottom radius
+_tr = _td / 2    ! Top radius
+
+! Flange radius
+_fr = _br + _fl
+
+_eps = 0.0001    ! tolerance to avoid degenerate geometry
+
+! ---------- Default pen for 2D ----------
+PEN pen2D
+
+! If tapered mode is off, keep base and top diameters equal
+if isTapered = 0 then
+    tDia = bDia
+endif
+
+! ---------- Origin toggle ----------
+if originToggle then
+    zOrigin = -_d     ! shift whole recess downward
+else
+    zOrigin = 0
+endif

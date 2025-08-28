@@ -1,0 +1,111 @@
+! =========================================================
+! 2D – Circle outline + movable label (combined hotspots)
+! Added: sym2DStyle (0..3), opaqueMask (0/1)
+! IMPROVED: Always readable label with rotation compensation
+! =========================================================
+
+_br = bDia / 2
+_modelRotation = modelRotation
+
+PEN pen2D
+LINE_TYPE 1
+
+! ---------------------------------------------------------
+! Optional opaque mask - filled circle behind the outline
+IF opaque2D THEN
+    FILL maskFillType
+    CIRCLE2 0, 0, _br
+ENDIF
+
+! ---------------------------------------------------------
+! Circle outline (always draw)
+CIRCLE2 0, 0, _br
+
+! ---------------------------------------------------------
+! Extra symbol graphics by stylea
+! 0 = none, 1 = X, 2 = crosshair, 3 = down arrow
+
+IF sym2DStyle = 0 THEN
+    ! nothing extra
+ELSE
+    IF sym2DStyle = 1 THEN
+        ! Circle + X (45° diagonal cross)
+        _diag = _br * 0.707  ! cos(45°) = sin(45°) = 0.707
+        LINE2 -_diag, -_diag, _diag, _diag
+        LINE2 _diag, -_diag, -_diag, _diag
+    ELSE
+        IF sym2DStyle = 2 THEN
+            ! Circle + crosshair (extend a bit beyond circle)
+            _ext = _br / 4
+            LINE2 -_br - _ext, 0, _br + _ext, 0
+            LINE2 0, -_br - _ext, 0, _br + _ext
+        ELSE
+            ! sym2DStyle = 3 : down arrow from bottom
+            _arrowLen = bDia / 1.2    ! Arrow length
+            _arrowHalf = bDia / 3     ! Arrow head width
+            LINE2 0, -_br, 0, -_br - _arrowLen
+            LINE2 0, -_br - _arrowLen, -_arrowHalf, -_br - (_arrowLen * 0.6)
+            LINE2 0, -_br - _arrowLen, _arrowHalf, -_br - (_arrowLen * 0.6)
+        ENDIF
+    ENDIF
+ENDIF
+
+! ---------------------------------------------------------
+! Movable label handle (combined editing of labelX & labelY)
+HOTSPOT2 labelX, 0, 2001, labelY, 1+128
+HOTSPOT2 labelX, -1, 2002, labelY, 3
+HOTSPOT2 labelX, labelY, 2003, labelY, 2
+HOTSPOT2 0, labelY, 2004, labelX, 1+128
+HOTSPOT2 -1, labelY, 2005, labelX, 3
+HOTSPOT2 labelX, labelY, 2006, labelX, 2
+
+! ---------------------------------------------------------
+! IMPROVED LABEL with rotation compensation 
+! Goal: Always keep text horizontal at 0° in global view
+
+! Get the symbol rotation (this works now)
+_symbolRotation = SYMB_ROTANGLE
+
+! Calculate total text rotation to counter both rotations
+_textRotation = -(_symbolRotation + _modelRotation)
+
+! Calculate label size
+labelMM = labelSize / 2.8346
+
+! Move to label position
+ADD2 labelX, labelY
+
+! Rotate to counter BOTH the symbol rotation AND model rotation (keep text readable)
+ROT2 _textRotation
+
+! ---------------------------------------------------------
+! Draw the text - CHOOSE SOURCE BASED ON TOGGLE
+DEFINE STYLE "RL_LabelStyle" "Arial", labelMM, 5, 0
+SET STYLE "RL_LabelStyle"
+PEN pen2D  ! Ensure text uses proper pen
+
+! Choose label text based on labelSource parameter:
+! 0 = Object ID, 1 = Custom Text
+IF labelSource = 0 THEN
+    _displayText = GLOB_ID    ! Alternative 1 (uncomment if ID doesn't work)
+ELSE
+    _displayText = labelText    ! Use custom text parameter
+ENDIF
+
+TEXT2 0, 0, _displayText
+
+! Debug: Uncomment to see what's happening
+! TEXT2 0, -0.3, STR("Source:%d", labelSource)
+
+! Restore transformations
+DEL 2  ! Remove both ADD2 and ROT2
+
+
+! ---------------------------------------------------------
+! Reference snap hotspots (optional)
+HOTSPOT2 0, 0
+! Add 4 cardinal points on the circle
+HOTSPOT2 _br, 0
+HOTSPOT2 0, _br
+HOTSPOT2 -_br, 0
+HOTSPOT2 0, -_br

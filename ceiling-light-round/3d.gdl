@@ -1,0 +1,79 @@
+! =========================================================
+! 3D – Circular/Cylindrical recess + separate flange ring + solid top cap
+! =========================================================
+
+addz zOrigin
+
+! Set circle resolution for smooth curves
+RESOL 36
+
+! Number of segments for circular shape
+_nseg = 36
+_angle_step = 360 / _nseg
+
+! ----- Create walls as individual segments -----
+MATERIAL matRecess
+
+! Loop to create individual wall segments
+FOR i = 1 TO _nseg
+	_angle1 = (i - 1) * _angle_step
+	_angle2 = i * _angle_step
+	
+	! Inner wall segment
+	RULED 2, 2,
+		_br * COS(_angle1), _br * SIN(_angle1), 0,
+		_br * COS(_angle2), _br * SIN(_angle2), 0,
+		_tr * COS(_angle1), _tr * SIN(_angle1), _d,
+		_tr * COS(_angle2), _tr * SIN(_angle2), _d
+	
+	! Outer wall segment
+	RULED 2, 2,
+		(_br + _wt) * COS(_angle1), (_br + _wt) * SIN(_angle1), 0,
+		(_br + _wt) * COS(_angle2), (_br + _wt) * SIN(_angle2), 0,
+		(_tr + _wt) * COS(_angle1), (_tr + _wt) * SIN(_angle1), _d,
+		(_tr + _wt) * COS(_angle2), (_tr + _wt) * SIN(_angle2), _d
+	
+NEXT i
+
+! ----- Top cap -----
+MATERIAL matRecess
+ADDz _d                 ! move to top of the wall segments
+CYLIND _ct, _tr + _wt    ! create the cap as a cylinder with thickness _ct and matching top radius
+DEL 1
+
+! ----- Lens (if enabled) -----
+IF lensToggle THEN
+	MATERIAL matLens
+	ADDz lensSetback
+	CYLIND 0.001, _br  ! Very thin cylinder for lens
+	DEL 1
+ENDIF
+
+! ----- Flange ring at ceiling plane (extending DOWN) -----
+IF hasFlange THEN
+    MATERIAL matFlange
+    
+    ! Adjustable overlap parameter (positive = extra cut, negative = extra meat)
+    _flangeOverlap = 0.002
+    
+    ! Outer flange cylinder
+    GROUP "flange_outer"
+        ADDz -_ft
+        CYLIND _ft, _fr
+        DEL 1
+    ENDGROUP
+    
+    ! Inner cylinder (subtracted)
+    GROUP "flange_inner"
+        ADDz -_ft - 0.0001
+        CYLIND _ft + 0.0002, _br + _flangeOverlap
+        DEL 1
+    ENDGROUP
+    
+    ! Boolean subtraction: outer – inner
+    PLACEGROUP SUBGROUP("flange_outer", "flange_inner")
+    KILLGROUP "flange_outer"
+    KILLGROUP "flange_inner"
+ENDIF
+
+del 1

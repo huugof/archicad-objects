@@ -1,0 +1,70 @@
+! =========================================================
+! Parameter Script – Defaults & Constraints (Imperial Units)
+! Circular/Cylindrical Version
+! =========================================================
+
+PARAMETERS A = bDia
+PARAMETERS B = bDia
+PARAMETERS ZZYZX = hDepth+capThk
+LOCK "A", "B", "ZZYZX"
+
+! ---------- Guard against empty/zero label size ----------
+IF labelSize <= 0 THEN PARAMETERS labelSize = 2.4
+
+! ---------- Minimum limits ----------
+IF bDia < 0.005 THEN PARAMETERS bDia = 0.005
+IF tDia < 0.005 THEN PARAMETERS tDia = 0.005
+IF hDepth < 0.005 THEN PARAMETERS hDepth = 0.005
+
+IF flThk < 0 THEN PARAMETERS flThk = 0
+IF flLap < 0 THEN PARAMETERS flLap = 0
+IF wallThk < 0 THEN PARAMETERS wallThk = 0
+IF capThk  < 0 THEN PARAMETERS capThk  = 0
+
+! ---------- Wall thickness must fit inside radius ----------
+IF wallThk > bDia/2 THEN PARAMETERS wallThk = bDia/2
+IF wallThk > tDia/2 THEN PARAMETERS wallThk = tDia/2
+
+! ---------- Maximum limits ----------
+IF bDia > 80 THEN PARAMETERS bDia = 80
+IF tDia > 80 THEN PARAMETERS tDia = 80
+IF hDepth > 10 THEN PARAMETERS hDepth = 10
+IF flThk  > 2  THEN PARAMETERS flThk  = 2
+IF flLap  > 6  THEN PARAMETERS flLap  = 6
+IF labelSize > 10 THEN PARAMETERS labelSize = 10
+IF capThk  > 6  THEN PARAMETERS capThk  = 6
+
+! ---------- Value lists ----------
+! VALUES "pen2D" 1, 2, 4, 7, 15, 19, 25, 91
+! labelSize = 6.75  ! Change from 3.5mm to 12pt
+! VALUES "labelSize" 8, 10, 12, 14, 18, 24  ! Point sizes instead of mm
+
+! --- Flange lock logic ---
+IF hasFlange = 0 THEN
+	LOCK "flThk"
+	LOCK "flLap"
+ENDIF
+
+! --- Lens lock logic ---
+IF lensToggle = 0 THEN
+	LOCK "lensSetback"
+ENDIF
+
+! --- Tapered Wall logic ---
+IF isTapered = 0 THEN
+    PARAMETERS tDia = bDia
+	LOCK "tDia"
+ENDIF
+
+! 0 = Circle only
+! 1 = Circle + X
+! 2 = Circle + crosshair
+! 3 = Circle + down arrow
+VALUES "sym2DStyle" 0, 1, 2, 3
+sym2DStyle = 0
+
+IF labelSource = 0 THEN
+	LOCK "labelText"
+ENDIF
+
+opaqueMask = 0
