@@ -1,0 +1,74 @@
+! =========================================================
+! 3D – Trapezoidal recess + separate flange ring + solid top cap
+! =========================================================
+
+
+addz zOrigin
+! your geometry here
+
+! ----- Recess walls -----
+! Bottom polygon (z=0), then top polygon (z=_d)
+MATERIAL matRecess
+RULED 4, 4,
+    -_bhx, -_bhy, 0,
+     _bhx, -_bhy, 0,
+     _bhx,  _bhy, 0,
+    -_bhx,  _bhy, 0,
+    -_thx, -_thy, _d,
+     _thx, -_thy, _d,
+     _thx,  _thy, _d,
+    -_thx,  _thy, _d
+
+! ----- Top face (solid cap) -----
+MATERIAL matRecess
+ADDz _d
+PRISM_ 5, _ct,                   ! cap thickness extrusion
+    -_thx-_wt, -_thy-_wt, 15,    ! Changed: SUBTRACT _wt from negative coordinates
+     _thx+_wt, -_thy-_wt, 15,    ! Keep: ADD _wt to positive X, SUBTRACT from negative Y
+     _thx+_wt,  _thy+_wt, 15,    ! Keep: ADD _wt to positive coordinates  
+    -_thx-_wt,  _thy+_wt, 15,    ! Changed: SUBTRACT _wt from negative X, ADD to positive Y
+    -_thx-_wt, -_thy-_wt, -1     ! Close polygon with first point
+DEL 1
+
+IF lensToggle THEN
+	MATERIAL matLens        ! assign lens/glass material
+	PLANE 4,
+    	-_bhx, -_bhy, lensSetback,
+    	 _bhx, -_bhy, lensSetback,
+     	_bhx,  _bhy, lensSetback,
+    -	_bhx,  _bhy, lensSetback
+ENDIF
+
+! ----- Exterior walls -----
+! Bottom polygon (z=0), then top polygon (z=_d)
+MATERIAL matRecess
+RULED 4, 4,
+    -_bhx-_wt, -_bhy-_wt, 0,    ! Left/front: SUBTRACT wall thickness
+     _bhx+_wt, -_bhy-_wt, 0,    ! Right/front: ADD to right, SUBTRACT from front  
+     _bhx+_wt,  _bhy+_wt, 0,    ! Right/back: ADD wall thickness
+    -_bhx-_wt,  _bhy+_wt, 0,    ! Left/back: SUBTRACT from left, ADD to back
+    -_thx-_wt, -_thy-_wt, _d,   ! Top coordinates: same logic
+     _thx+_wt, -_thy-_wt, _d,
+     _thx+_wt,  _thy+_wt, _d,
+    -_thx-_wt,  _thy+_wt, _d
+
+
+! ----- Flange ring at ceiling plane (extending DOWN) -----
+MATERIAL matFlange
+IF hasFlange THEN
+	PRISM_ 10, -_ft,                 ! negative height = downward
+    -_pox, -_poy, 15,
+     _pox, -_poy, 15,
+     _pox,  _poy, 15,
+    -_pox,  _poy, 15,
+    -_pox, -_poy, -1,     ! close outer contour
+
+    -_bhx, -_bhy, 15,
+     _bhx, -_bhy, 15,
+     _bhx,  _bhy, 15,
+    -_bhx,  _bhy, 15,
+    -_bhx, -_bhy, -1      ! close inner hole
+ENDIF
+
+
+del 1

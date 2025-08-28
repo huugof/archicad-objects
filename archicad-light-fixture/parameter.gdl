@@ -1,0 +1,97 @@
+! =========================================================
+! Parameter Script – Defaults & Constraints (Imperial Units)
+! =========================================================
+! Hidden parameters in PARAMETER list:
+!   prev_flThk    real, hidden
+!   prev_flLap    real, hidden
+
+PARAMETERS A = bX
+PARAMETERS B = bY
+PARAMETERS ZZYZX = hDepth+capThk
+LOCK "A", "B", "ZZYZX"
+
+
+! ---------- Guard against empty/zero label size ----------
+IF labelSize <= 0 THEN PARAMETERS labelSize = 2.4
+
+! ---------- Minimum limits ----------
+IF bX < 0.005 THEN PARAMETERS bX = 0.005
+IF bY < 0.005 THEN PARAMETERS bY = 0.005
+IF tX < 0.005 THEN PARAMETERS tX = 0.005
+IF tY < 0.005 THEN PARAMETERS tY = 0.005
+IF hDepth < 0.005 THEN PARAMETERS hDepth = 0.005
+
+IF flThk < 0 THEN PARAMETERS flThk = 0
+IF flLap < 0 THEN PARAMETERS flLap = 0
+IF wallThk < 0 THEN PARAMETERS wallThk = 0
+IF capThk  < 0 THEN PARAMETERS capThk  = 0
+
+! ---------- Wall thickness must fit inside all openings ----------
+IF wallThk > bX/2 THEN PARAMETERS wallThk = bX/2
+IF wallThk > bY/2 THEN PARAMETERS wallThk = bY/2
+IF wallThk > tX/2 THEN PARAMETERS wallThk = tX/2
+IF wallThk > tY/2 THEN PARAMETERS wallThk = tY/2
+
+! ---------- Maximum limits ----------
+IF bX > 80 THEN PARAMETERS bX = 80
+IF bY > 80 THEN PARAMETERS bY = 80
+IF tX > 80 THEN PARAMETERS tX = 80
+IF tY > 80 THEN PARAMETERS tY = 80
+IF hDepth > 10 THEN PARAMETERS hDepth = 10
+IF flThk  > 2  THEN PARAMETERS flThk  = 2
+IF flLap  > 6  THEN PARAMETERS flLap  = 6
+IF labelSize > 10 THEN PARAMETERS labelSize = 10
+IF capThk  > 6  THEN PARAMETERS capThk  = 6
+
+! ---------- Value lists ----------
+! VALUES "pen2D" 1, 2, 4, 7, 15, 19, 25, 91
+! labelSize = 6.75  ! Change from 3.5mm to 12pt
+! VALUES "labelSize" 8, 10, 12, 14, 18, 24  ! Point sizes instead of mm
+
+! --- Square shape logic ---
+! Keep bY tied to bX and lock it when square
+IF isSquare = 1 THEN
+    PARAMETERS bY = bX      ! keep it square
+	PARAMETERS tY = tX
+    LOCK "bY"               ! greys out & disables in the dialog
+	LOCK "tY"
+ELSE
+    ! no LOCK -> it stays editable
+ENDIF
+
+IF hasFlange = 0 THEN
+	LOCK "flThk"
+	LOCK "flLap"
+ENDIF
+
+IF lensToggle = 0 THEN
+	LOCK "lensSetback"
+ENDIF
+
+! --- Tapered Wall logic ---
+IF isTapered = 0 THEN
+    PARAMETERS tX = bX
+	PARAMETERS tY = bY
+	LOCK "tX"
+	LOCK "tY"
+    IF isSquare = 1 THEN
+        PARAMETERS bY = bX
+		LOCK "bY"
+    ENDIF
+ENDIF
+
+! 0 = Square only
+! 1 = Square + X
+! 2 = Square + crosshair
+! 3 = Square + down arrow
+VALUES "sym2DStyle" 0, 1, 2, 3
+sym2DStyle = 0
+
+! NEW: Label source toggle
+! 0 = Object ID (automatic)
+! 1 = Custom text
+IF labelSource = 0 THEN
+	LOCK "labelText"
+ENDIF
+
+opaqueMask = 0

@@ -1,0 +1,51 @@
+! =========================================================
+! SQUARE RECESSED LIGHT – Master Script (Imperial Units)
+! =========================================================
+! All physical length parameters are in INCHES.
+! Z=0 is the ceiling plane. Recess extends upward (+Z).
+! =========================================================
+
+! ---------- Derived/common values ----------
+_bx  = bX
+_by  = bY
+_tx  = tX
+_ty  = tY
+_d   = hDepth
+_ft  = flThk
+_fl  = flLap
+_ct  = capThk
+_wt  = wallThk
+
+! Half dimensions for centered modeling
+_bhx = _bx / 2
+_bhy = _by / 2
+_thx = _tx / 2
+_thy = _ty / 2
+
+! Flange extents
+_pox = _bhx + _fl
+_poy = _bhy + _fl
+
+_eps = 0.0001    ! tolerance to avoid degenerate geometry
+
+! ---------- Default pen for 2D ----------
+PEN pen2D
+
+! If square mode is on, keep base and top lengths equal
+if isSquare then
+    bY = bX
+    tY = tX
+endif
+
+! If tapered mode is off, keep base and top lengths equal
+if isTapered = 0 then
+    tX = bX
+    tY = bY
+endif
+
+! ---------- Origin toggle ----------
+if originToggle then
+    zOrigin = -_d     ! shift whole recess downward
+else
+    zOrigin = 0
+endif
