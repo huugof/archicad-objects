@@ -31,6 +31,7 @@ x,labelY,dimension,,0"
 -,maskFillType,fill,,21
 -,maskFillPen,pen,,91
 -,hasArm,checkbox,,On
+-,cylindricalArm,checkbox,,Off
 -,armLength,dimension,,6"
 -,plateWidth,dimension,,4"
 -,plateHeight,dimension,,4"

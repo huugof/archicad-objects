@@ -76,27 +76,43 @@ ENDIF
 IF hasArm THEN
     MATERIAL matArm
     
-    ! Wall mounting plate (at wall surface - aligned with fixture center)
-    ADDy -_armLen - _plateT/2        ! Position at wall surface
-    ADDz _originZ - _plateH/2        ! Center plate at fixture center level
-    PRISM_ 5, _plateH,               ! Plate height (extrude vertically)
-        -_plateHW, -_plateT/2, 15,   ! Plate outline (width x thickness)
-         _plateHW, -_plateT/2, 15,
-         _plateHW,  _plateT/2, 15,
-        -_plateHW,  _plateT/2, 15,
-        -_plateHW, -_plateT/2, -1    ! Close polygon
-    DEL 2                            ! Remove ADDy and ADDz
-    
-    ! Mounting arm (horizontal connection from plate to fixture)
-    ADDy -_armLen/2                  ! Position at arm center
-    ADDz _originZ - _armH/2          ! Center arm at fixture center level
-    PRISM_ 5, _armH,                 ! Arm height in Z
-        -_armT/2, -_armLen/2, 15,    ! Arm outline (thin in X, long in Y)
-         _armT/2, -_armLen/2, 15,
-         _armT/2,  _armLen/2, 15,
-        -_armT/2,  _armLen/2, 15,
-        -_armT/2, -_armLen/2, -1     ! Close polygon
-    DEL 2                            ! Remove ADDy and ADDz
+    IF cylindricalArm THEN
+        ! Cylindrical wall mounting plate (at wall surface - horizontal cylinder towards wall)
+        ADDy -_armLen - _plateT          ! Position at back of plate
+        ADDz _originZ                    ! Center plate at fixture center level
+        ROTX -90                         ! Rotate to align cylinder axis toward fixture (reverse direction)
+        CYLIND _plateT, _plateH/2        ! Length = plateThickness, radius = plateHeight/2 (plateHeight used as diameter)
+        DEL 3                            ! Remove ROTX, ADDz, ADDy
+        
+        ! Cylindrical mounting arm (horizontal connection from plate to fixture)
+        ADDy -_armLen                    ! Position at plate face (start of arm)
+        ADDz _originZ                    ! Center arm at fixture center level
+        ROTX -90                         ! Rotate cylinder to extend toward fixture (reverse direction)
+        CYLIND _armLen, _armH/2          ! Length = armLength, radius = armHeight/2 (armHeight used as diameter)
+        DEL 3                            ! Remove ROTX, ADDz, ADDy
+    ELSE
+        ! Rectangular wall mounting plate (at wall surface - aligned with fixture center)
+        ADDy -_armLen - _plateT/2        ! Position at wall surface
+        ADDz _originZ - _plateH/2        ! Center plate at fixture center level
+        PRISM_ 5, _plateH,               ! Plate height (extrude vertically)
+            -_plateHW, -_plateT/2, 15,   ! Plate outline (width x thickness)
+             _plateHW, -_plateT/2, 15,
+             _plateHW,  _plateT/2, 15,
+            -_plateHW,  _plateT/2, 15,
+            -_plateHW, -_plateT/2, -1    ! Close polygon
+        DEL 2                            ! Remove ADDy and ADDz
+        
+        ! Rectangular mounting arm (horizontal connection from plate to fixture)
+        ADDy -_armLen/2                  ! Position at arm center
+        ADDz _originZ - _armH/2          ! Center arm at fixture center level
+        PRISM_ 5, _armH,                 ! Arm height in Z
+            -_armT/2, -_armLen/2, 15,    ! Arm outline (thin in X, long in Y)
+             _armT/2, -_armLen/2, 15,
+             _armT/2,  _armLen/2, 15,
+            -_armT/2,  _armLen/2, 15,
+            -_armT/2, -_armLen/2, -1     ! Close polygon
+        DEL 2                            ! Remove ADDy and ADDz
+    ENDIF
 ENDIF
 
 ! ----- 3D Hotspots for dimension editing -----

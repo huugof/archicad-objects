@@ -132,7 +132,7 @@ UI_INFIELD  "maskFillPen",    _x3 + 105, _ySymbolTop + 73 + _padTop, 60, 19
 ! Wall Mount Group (below Symbol)
 ! ---------------------------
 _yWallMount = _ySymbolTop + 135
-UI_GROUPBOX `Wall Mount`, _x3, _yWallMount, 175, 150
+UI_GROUPBOX `Wall Mount`, _x3, _yWallMount, 175, 170
 
 UI_OUTFIELD `Arm length`,     _x3 + 10, _yWallMount + 15 + _padTop, 100, 15
 UI_INFIELD  "armLength",      _x3 + 105, _yWallMount + 13 + _padTop, 60, 19
@@ -151,3 +151,6 @@ UI_INFIELD  "armThk",         _x3 + 105, _yWallMount + 93 + _padTop, 60, 19
 
 UI_OUTFIELD `Arm height`,     _x3 + 10, _yWallMount + 115 + _padTop, 100, 15
 UI_INFIELD  "armHeight",      _x3 + 105, _yWallMount + 113 + _padTop, 60, 19
+
+UI_OUTFIELD `Cylindrical`,    _x3 + 10, _yWallMount + 135 + _padTop, 100, 15
+UI_INFIELD  "cylindricalArm", _x3 + 150, _yWallMount + 133 + _padTop, 18, 18

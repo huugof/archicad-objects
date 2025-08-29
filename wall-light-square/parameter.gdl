@@ -122,4 +122,11 @@ IF hasArm = 0 THEN
 	LOCK "armThk"
 	LOCK "armHeight"
 	LOCK "matArm"
+	LOCK "cylindricalArm"
+ENDIF
+
+! Lock rectangular dimensions when cylindricalArm is enabled
+IF cylindricalArm = 1 THEN
+	LOCK "plateWidth"    ! Width not used for cylindrical plate (diameter = plateHeight)
+	LOCK "armThk"        ! Thickness not used for cylindrical arm (diameter = armHeight)
 ENDIF
