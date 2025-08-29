@@ -6,6 +6,7 @@ Display,Variable,Type,Name,Value
 -,isTapered,checkbox,,On
 -,hasFlange,checkbox,,On
 -,lensToggle,checkbox,,Off
+-,wallMount,checkbox,,Off
 -,bX,dimension,,4"
 -,bY,dimension,,4"
 -,tX,dimension,,2"

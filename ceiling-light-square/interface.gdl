@@ -18,7 +18,7 @@ flags_bYlabel = (isSquare = 1) * 4
 ! ---------------------------
 ! Column 1 – 3D Options
 ! ---------------------------
-UI_GROUPBOX `3D Options`, _x1, _yTop, 175, 130
+UI_GROUPBOX `3D Options`, _x1, _yTop, 175, 150
 
 UI_OUTFIELD `Surface/Recessed`, _x1 + 10, _yTop + 15 + _padTop, 120, 15
 UI_INFIELD  "originToggle",     _x1 + 150, _yTop + 13 + _padTop, 18, 18
@@ -35,10 +35,13 @@ UI_INFIELD  "hasFlange",        _x1 + 150, _yTop + 73 + _padTop, 18, 18
 UI_OUTFIELD `Lens (on/off)`,    _x1 + 10, _yTop + 95 + _padTop, 120, 15
 UI_INFIELD  "lensToggle",       _x1 + 150, _yTop + 93 + _padTop, 18, 18
 
+UI_OUTFIELD `Wall Mount`,       _x1 + 10, _yTop + 115 + _padTop, 120, 15
+UI_INFIELD  "wallMount",        _x1 + 150, _yTop + 113 + _padTop, 18, 18
+
 ! ---------------------------
 ! Column 1 – Materials (moved under 3D Options)
 ! ---------------------------
-_yMat = _yTop + 140
+_yMat = _yTop + 160
 UI_GROUPBOX `Materials`, _x1, _yMat, 175, 90
 
 UI_OUTFIELD `Fixture surface`,   _x1 + 10, _yMat + 15 + _padTop, 100, 15

@@ -3,7 +3,18 @@
 ! =========================================================
 
 
-addz zOrigin
+! Apply origin offset based on mount type
+if wallMount then
+    ! Wall mount: originToggle moves fixture in/out of wall (Y direction)
+    if originToggle then
+        addy -_d     ! Move into wall by depth amount
+    endif
+    rotx 90         ! Rotate for wall mounting
+else
+    ! Ceiling mount: originToggle moves fixture up/down from ceiling (Z direction) 
+    addz zOrigin    ! Use original zOrigin logic from master.gdl
+endif
+
 ! your geometry here
 
 ! ----- Recess walls -----
@@ -71,4 +82,12 @@ IF hasFlange THEN
 ENDIF
 
 
-del 1
+! Restore transforms
+if wallMount then
+    del 1  ! Remove rotx
+    if originToggle then
+        del 1  ! Remove addy if it was applied
+    endif
+else
+    del 1  ! Remove addz (from zOrigin)
+endif
