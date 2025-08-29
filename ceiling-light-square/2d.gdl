@@ -120,6 +120,22 @@ TEXT2 0, 0, _displayText
 DEL 2  ! Remove both ADD2 and ROT2
 
 ! ---------------------------------------------------------
+! Interactive dimension editing hotspots
+! ---------------------------------------------------------
+
+! Fixture width editing (horizontal at fixture)
+HOTSPOT2 -_bhx, 0, 3007, bX, 1+128      ! Base hotspot left
+HOTSPOT2 -_bhx-1, 0, 3008, bX, 3        ! Reference hotspot
+HOTSPOT2 _bhx, 0, 3009, bX, 2           ! Draggable hotspot right
+
+! Fixture height editing (vertical at fixture) - only if not square
+IF isSquare = 0 THEN
+    HOTSPOT2 0, -_bhy, 3010, bY, 1+128  ! Base hotspot bottom
+    HOTSPOT2 0, -_bhy-1, 3011, bY, 3    ! Reference hotspot
+    HOTSPOT2 0, _bhy, 3012, bY, 2        ! Draggable hotspot top
+ENDIF
+
+! ---------------------------------------------------------
 ! Reference snap hotspots (optional)
 HOTSPOT2 0, 0
 HOTSPOT2 _bhx, _bhy
