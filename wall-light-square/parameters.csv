@@ -1,7 +1,6 @@
 
 Display,Variable,Type,Name,Value
 -,modelRotation,numeric,,0.00
--,originToggle,checkbox,,Off
 -,isSquare,checkbox,,On
 -,isTapered,checkbox,,On
 -,hasFlange,checkbox,,On
