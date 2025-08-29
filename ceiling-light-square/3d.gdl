@@ -15,6 +15,32 @@ else
     addz zOrigin    ! Use original zOrigin logic from master.gdl
 endif
 
+! ----- 3D Hotspots (positioned after transforms to track geometry) -----
+! Center reference point
+HOTSPOT 0, 0, 0
+
+! Corner hotspots for fixture outline (at ceiling/wall surface level)
+HOTSPOT -_bhx, -_bhy, 0
+HOTSPOT  _bhx, -_bhy, 0  
+HOTSPOT  _bhx,  _bhy, 0
+HOTSPOT -_bhx,  _bhy, 0
+
+! Depth hotspots (at recess bottom)
+HOTSPOT -_thx, -_thy, _d
+HOTSPOT  _thx, -_thy, _d
+HOTSPOT  _thx,  _thy, _d  
+HOTSPOT -_thx,  _thy, _d
+
+! Additional reference hotspots for snapping
+HOTSPOT 0, 0, _d        ! Center at depth
+IF hasFlange THEN
+    ! Flange extent hotspots
+    HOTSPOT -_pox, -_poy, 0
+    HOTSPOT  _pox, -_poy, 0
+    HOTSPOT  _pox,  _poy, 0
+    HOTSPOT -_pox,  _poy, 0
+ENDIF
+
 ! your geometry here
 
 ! ----- Recess walls -----
