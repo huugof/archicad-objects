@@ -1,0 +1,147 @@
+! =========================================================
+! Interface Script – Square Recessed Light
+! TABBED INTERFACE VERSION - NATIVE NAVIGATION
+! =========================================================
+
+UI_DIALOG `Square Recessed Light – Tabbed Settings`
+
+! ---------- CRITICAL: Tell Archicad which page to display ----------
+UI_CURRENT_PAGE gs_ui_current_page
+
+! =========================================================
+! VISUALIZATION TAB (Page 1) - Top Level
+! =========================================================
+UI_PAGE 1, -1, "Visualization"
+
+! Layout constants
+_x1 = 10           ! Left column
+_x2 = _x1 + 185    ! Middle column  
+_yTop = 10
+_padTop = 5        ! Extra padding from top of each groupbox
+
+! ---------------------------
+! 3D Options Group
+! ---------------------------
+UI_GROUPBOX `3D Options`, _x1, _yTop, 175, 150
+
+UI_OUTFIELD `Surface/Recessed`, _x1 + 10, _yTop + 15 + _padTop, 120, 15
+UI_INFIELD  "originToggle",     _x1 + 150, _yTop + 13 + _padTop, 18, 18
+
+UI_OUTFIELD `Square/Rectangle`, _x1 + 10, _yTop + 35 + _padTop, 120, 15
+UI_INFIELD  "isSquare",         _x1 + 150, _yTop + 33 + _padTop, 18, 18
+
+UI_OUTFIELD `Tapered Sides`,    _x1 + 10, _yTop + 55 + _padTop, 120, 15
+UI_INFIELD  "isTapered",        _x1 + 150, _yTop + 53 + _padTop, 18, 18
+
+UI_OUTFIELD `Flange (on/off)`,  _x1 + 10, _yTop + 75 + _padTop, 120, 15
+UI_INFIELD  "hasFlange",        _x1 + 150, _yTop + 73 + _padTop, 18, 18
+
+UI_OUTFIELD `Lens (on/off)`,    _x1 + 10, _yTop + 95 + _padTop, 120, 15
+UI_INFIELD  "lensToggle",       _x1 + 150, _yTop + 93 + _padTop, 18, 18
+
+UI_OUTFIELD `Wall Mount`,       _x1 + 10, _yTop + 115 + _padTop, 120, 15
+UI_INFIELD  "wallMount",        _x1 + 150, _yTop + 113 + _padTop, 18, 18
+
+! ---------------------------
+! Materials Group
+! ---------------------------
+_yMat = _yTop + 160
+UI_GROUPBOX `Materials`, _x1, _yMat, 360, 90
+
+UI_OUTFIELD `Fixture surface`,   _x1 + 10, _yMat + 15 + _padTop, 100, 15
+UI_INFIELD  "matRecess",         _x1 + 105, _yMat + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange surface`,    _x1 + 10, _yMat + 35 + _padTop, 100, 15
+UI_INFIELD  "matFlange",         _x1 + 105, _yMat + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Lens surface`,      _x1 + 10, _yMat + 55 + _padTop, 100, 15
+UI_INFIELD  "matLens",           _x1 + 105, _yMat + 53 + _padTop, 60, 19
+
+! =========================================================
+! CONNECTIONS TAB (Page 2) - Top Level
+! =========================================================
+UI_PAGE 2, -1, "Connections"
+
+! Layout constants (redefined for this page)
+_x1 = 10           ! Left column
+_yTop = 10
+_padTop = 5        
+
+! ---------------------------
+! Dimensions Group
+! ---------------------------
+UI_GROUPBOX `Dimensions`, _x1, _yTop, 360, 130
+
+! Left sub-column
+UI_OUTFIELD `Bottom width`,     _x1 + 10, _yTop + 15 + _padTop, 100, 15
+UI_INFIELD  "bX",               _x1 + 105, _yTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD "Bottom length",    _x1 + 10, _yTop + 35 + _padTop, 100, 15, (isSquare=1)*4
+UI_INFIELD  "bY",               _x1 + 105, _yTop + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Top width`,        _x1 + 10, _yTop + 55 + _padTop, 100, 15
+UI_INFIELD  "tX",               _x1 + 105, _yTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Top length`,       _x1 + 10, _yTop + 75 + _padTop, 100, 15
+UI_INFIELD  "tY",               _x1 + 105, _yTop + 73 + _padTop, 60, 19
+
+UI_OUTFIELD `Height`,           _x1 + 10, _yTop + 95 + _padTop, 100, 15
+UI_INFIELD  "hDepth",           _x1 + 105, _yTop + 93 + _padTop, 60, 19
+
+! Right sub-column
+UI_OUTFIELD `Wall thickness`,   _x1 + 200, _yTop + 15 + _padTop, 100, 15
+UI_INFIELD  "wallThk",          _x1 + 295, _yTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange thickness`, _x1 + 200, _yTop + 35 + _padTop, 100, 15
+UI_INFIELD  "flThk",            _x1 + 295, _yTop + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Flange overhang`,  _x1 + 200, _yTop + 55 + _padTop, 100, 15
+UI_INFIELD  "flLap",            _x1 + 295, _yTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Lens setback`,     _x1 + 200, _yTop + 75 + _padTop, 100, 15
+UI_INFIELD  "lensSetback",      _x1 + 295, _yTop + 73 + _padTop, 60, 19
+
+! =========================================================
+! PLAN SYMBOL TAB (Page 3) - Top Level
+! =========================================================
+UI_PAGE 3, -1, "Plan Symbol"
+
+! Layout constants (redefined for this page)
+_x1 = 10           
+_yTop = 10
+_padTop = 5        
+
+! ---------------------------
+! Label Group
+! ---------------------------
+UI_GROUPBOX `Label`, _x1, _yTop, 175, 100
+
+UI_OUTFIELD `Label (ID/Custom)`,     _x1 + 10, _yTop + 15 + _padTop, 100, 15
+UI_INFIELD  "labelSource",      _x1 + 105, _yTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Custom text`,      _x1 + 10, _yTop + 35 + _padTop, 100, 15, (labelSource=0)*4
+UI_INFIELD  "labelText",        _x1 + 105, _yTop + 33 + _padTop, 60, 19
+
+UI_OUTFIELD `Pen`,              _x1 + 10, _yTop + 55 + _padTop, 100, 15
+UI_INFIELD  "pen2D",            _x1 + 105, _yTop + 53 + _padTop, 60, 19
+
+UI_OUTFIELD `Font Size`,        _x1 + 10, _yTop + 75 + _padTop, 100, 15
+UI_INFIELD  "labelSize",        _x1 + 105, _yTop + 73 + _padTop, 60, 19
+
+! ---------------------------
+! Symbol Group
+! ---------------------------
+_ySymbolTop = _yTop + 110
+UI_GROUPBOX `Symbol`, _x1, _ySymbolTop, 360, 120
+
+UI_OUTFIELD `Symbol`,         _x1 + 10, _ySymbolTop + 15 + _padTop, 100, 15
+UI_INFIELD  "sym2DStyle",     _x1 + 105, _ySymbolTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Opaque (y/n)`,   _x1 + 10, _ySymbolTop + 35 + _padTop, 100, 15
+UI_INFIELD  "opaque2D",       _x1 + 105, _ySymbolTop + 33 + _padTop, 18, 18
+
+UI_OUTFIELD `Fill`,           _x1 + 200, _ySymbolTop + 15 + _padTop, 100, 15
+UI_INFIELD  "maskFillType",   _x1 + 295, _ySymbolTop + 13 + _padTop, 60, 19
+
+UI_OUTFIELD `Fill Pen`,       _x1 + 200, _ySymbolTop + 35 + _padTop, 100, 15
+UI_INFIELD  "maskFillPen",    _x1 + 295, _ySymbolTop + 33 + _padTop, 60, 19
